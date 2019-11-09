@@ -15,9 +15,9 @@ return color.join('');
 }
 //获取随机rgb颜色
 this.getColorRgb = function(){
-    var r = this.getInt(0,255);
-    var g = this.getInt(0,255);
-    var b = this.getInt(0,255);
+    var r = Math.floor(Math.random()*256);
+    var g = Math.floor(Math.random()*256);
+    var b = Math.floor(Math.random()*256);
     var color = 'rgb('+r+','+g+','+b+')';
     return color;
 }
