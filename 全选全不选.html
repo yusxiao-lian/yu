@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            border-spacing: 0;
+            border: 1px solid #c0c0c0;
+            width: 500px;
+            margin: 100px auto;
+            text-align: center;
+        }
+        td {
+            border: 1px solid #d0d0d0;
+            color: #404060;
+            padding: 10px;
+        }
+        thead {
+            background-color: #0099cc;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>
+                    <input type="checkbox" id="all">
+                    全选/全不选
+
+                </th>
+                <th>菜名</th>
+                <th>商家</th>
+                <th>价格</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <input type="checkbox" class="check">
+                </td>
+                <td>红烧肉</td>
+                <td>隆江猪脚饭</td>
+                <td>￥200</td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="checkbox" class="check">
+                </td>
+                <td>香酥排骨</td>
+                <td>隆江猪脚饭</td>
+                <td>￥998</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+    <script>
+        var all = document.getElementById('all');
+        var other = document.getElementsByClassName('check');
+        // console.log(other)  //所返回为伪数组（具有数组特征没有数组行为）
+        all.onclick = function(){
+            //获取状态
+            var chec = this.checked;
+            //将选中状态附加到其他复选框
+            for(i=0;i<other.length;i++){
+                other[i].checked = chec;
+            } 
+        }
+
+        for(i=0;i<other.length;i++){
+            //每次点击其他选项都检查一次是否全部勾选
+            other[i].onclick = function(){
+            var sta = true;
+            for(k=0;k<other.length;k++){
+                //有一个没勾选全选框就不勾选
+                if(other[k].checked==false){
+                    sta =false;
+                    break;
+                }
+            }
+            //最后确定全选框状态
+            all.checked = sta;
+        }
+        }
+
+    </script>
+
+</html>
