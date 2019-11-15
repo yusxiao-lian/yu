@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        li {
+            list-style: none;
+        }
+        .box {
+            width: 500px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin: 0 auto;
+        }
+        #text {
+            width: 500px;
+            height: 250px;
+
+        }
+        #btn {
+            padding: 10px;
+            background: salmon;
+        }
+        #list li {
+            height: 40px;
+            line-height: 40px;
+            border-bottom: 1px dashed #ccc;
+        }
+        #list li p {
+            float: left;
+        }
+        #list li span {
+            float: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <textarea name="" id="text" ></textarea>
+        <input type="button" value="发布" id="btn">
+        <ul id="list">
+            <li>
+                <p>默认1</p>
+                <span>删除</span>
+            </li>
+            <li>
+                <p>默认2</p>
+                <span>删除</span>
+            </li>
+            <li>
+                <p>默认3</p>
+                <span>删除</span>
+            </li>
+        </ul>
+    </div>
+</body>
+    <script>
+        var list = document.getElementById('list');
+        var text = document.getElementById('text');
+        var btn = document.getElementById('btn');
+
+        var arr = [];
+        btn.onclick = function(){
+            var msg = text.value;
+
+            if(msg === ''){
+                return false;
+            }
+            
+            //本地存储
+            var obj = {
+                msg:msg,
+            }
+            arr.push(obj);
+            var json = JSON.stringify(arr);
+            localStorage.setItem('msg',json);
+
+            var localmsg = localStorage.getItem('msg');
+            if(localmsg = ''){
+                arr = [];
+            }else{
+                arr = JSON.parse(msg);
+            }
+            // console.log(localmsg)
+           //循环创建li添加到列表中
+           localmsg.forEach(function(e){
+                 var li = document.createElement('li');
+                  li.innerHTML = '<p>' +e.msg +'</p><span>删除</span>';
+                  first = document.querySelector('#list li:first-child');
+                  list.insertBefore(li,first);
+            });
+            
+           
+            
+            text.value = '';
+        }
+
+        list.addEventListener('click',function(e){
+            // console.log(e.target);
+            console.dir(e.target);   //是什么反注释自己看
+            // console.dir(e.target.nodeName);
+            if(e.target.nodeName === 'SPAN'){
+                var li = e.target.parentNode;
+                list.removeChild(li);
+            }
+        })
+    </script>
+</html>
