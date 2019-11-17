@@ -1,0 +1,136 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>放大镜效果</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .box {
+      width: 450px;
+      height: 450px;
+      border: 1px solid #aaa;
+      position: relative;
+      top: 100px;
+      left: 100px;
+    }
+
+    .small {
+      width: 450px;
+      height: 450px;
+      position: absolute;
+    }
+
+    .mask {
+      position: absolute;
+      background-color: rgba(255, 255, 0, .3);
+      width: 225px;
+      height: 225px;
+      top: 0;
+      left: 0;
+      display: none;
+    }
+
+    .big {
+      width: 450px;
+      height: 450px;
+      border: 1px solid #aaa;
+      position: absolute;
+      left: 500px;
+      top: 0;
+      overflow: hidden;
+      display: none;
+    }
+
+    .big>img {
+      width: 900px;
+      height: 900px;
+      position: absolute;
+    }
+    #detail {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="box">
+    <div class="small">
+      <img src="./images/s.jpg" alt="">
+      <div class="mask"></div>
+    </div>
+    <div class="big">
+      <img src="./images/big.jpg" alt="">
+    </div>
+  </div>
+  <!-- 偏移量计算详情图 -->
+  <img src="./images/距离偏移计算详情.png" alt="" id="detail">
+</body>
+  <script>
+    var box = document.querySelector('.box');
+    var small = document.querySelector('.small');
+    var mask = document.querySelector('.mask');
+    var big = document.querySelector('.big');
+    var bigImg = document.querySelector('.big > img');
+    //鼠标移入事件
+    small.onmouseover = function(){
+      mask.style.display = 'block';
+      big.style.display = 'block';
+    }
+    //鼠标移出事件
+    small.onmouseout = function(){
+      mask.style.display = 'none';
+      big.style.display = 'none';
+    }
+    //鼠标在小盒子移动事件
+    small.onmousemove = function(e){
+      //获取当前鼠标坐标
+      var nowX = e.pageX;
+      var nowY = e.pageY;
+      //计算出遮罩层需要的偏移量
+      //遮罩层X轴偏移 = pageX-大盒子box的offsetleft-遮罩层宽度的一半
+      var maskX = nowX - box.offsetLeft - mask.offsetWidth / 2;
+      //遮罩层Y轴偏移量 = pageY - 大盒子box的offsettop - 遮罩层长度的一半
+      var maskY = nowY - box.offsetTop - mask.offsetHeight / 2;
+      // console.log(maskY,maskX)
+      //设置限制距离，防止遮罩层移出小盒子范围
+      // if(maskX<0){
+      //   maskX = 0;
+      // }
+      //遮罩层最大X偏移量
+      var maxX = small.offsetWidth - mask.offsetWidth;
+      //遮罩层最大Y偏移量
+      var maxY = small.offsetHeight - mask.offsetHeight;
+      //当偏移量为负值遮罩层移出小盒子时
+      maskX = maskX < 0 ? 0 : maskX;
+      maskY = maskY < 0 ? 0 : maskY;
+      //当超出最大偏移量时
+      maskX = maskX > maxX ? maxX : maskX;
+      maskY = maskY > maxY ? maxY : maskY;
+      //遮罩层跟随鼠标移动
+      mask.style.left = maskX + 'px';
+      mask.style.top = maskY + 'px';
+      //计算出大图偏移量(按小图便宜等比例计算)
+      //遮罩层位移距离/遮罩层位移最大距离 = 大图位移距离/大图位移最大距离
+
+      //大图应位移距离 = 遮罩层位移距离*大图位移最大距离/遮罩层位移最大距离
+
+      //大图X轴位移最大距离
+      var bigImgMaxX = bigImg.offsetWidth - big.offsetWidth;
+      //大图Y轴位移最大距离
+      var bigImgMaxY = bigImg.offsetHeight - big.offsetHeight;
+      //大图X轴偏移
+      bigImg.style.left = -maskX*bigImgMaxX/maxX + 'px';
+      //大图Y轴偏移
+      bigImg.style.top = -maskY*bigImgMaxY/maxY + 'px';
+    }
+  </script>
+</html>
