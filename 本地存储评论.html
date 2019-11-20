@@ -4,112 +4,134 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-        }
-        li {
-            list-style: none;
-        }
-        .box {
-            width: 500px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            margin: 0 auto;
-        }
-        #text {
-            width: 500px;
-            height: 250px;
-
-        }
-        #btn {
-            padding: 10px;
-            background: salmon;
-        }
-        #list li {
-            height: 40px;
-            line-height: 40px;
-            border-bottom: 1px dashed #ccc;
-        }
-        #list li p {
-            float: left;
-        }
-        #list li span {
-            float: right;
-        }
-    </style>
+    <title>评论本地存储</title>
 </head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    #box {
+        width: 500px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        margin: 0 auto;
+    }
+    #text {
+        width: 500px;
+        height: 200px;
+    }
+    .list {
+        padding: 10px;
+    }
+    .list li{
+        height: 30px;
+        line-height: 30px;
+        list-style: none;
+        border-bottom: 1px dashed #ccc;
+    }
+    .list li p {
+        float: left;
+    }
+    .list li span {
+        float: right;
+    }
+    #btn {
+        padding: 10px 20px;
+        background: rgb(221, 98, 27);
+        border-radius: 10px;
+    }
+</style>
 <body>
-    <div class="box">
+    <div class="box" id="box">   
         <textarea name="" id="text" ></textarea>
-        <input type="button" value="发布" id="btn">
-        <ul id="list">
-            <li>
-                <p>默认1</p>
-                <span>删除</span>
-            </li>
-            <li>
-                <p>默认2</p>
-                <span>删除</span>
-            </li>
-            <li>
-                <p>默认3</p>
-                <span>删除</span>
-            </li>
-        </ul>
+        <input type="button" id="btn" value="发布">
+        <ul class="list"></ul>
+        
+        
     </div>
 </body>
-    <script>
-        var list = document.getElementById('list');
-        var text = document.getElementById('text');
-        var btn = document.getElementById('btn');
+<script>
+    var text = document.querySelector('#text');
+    var btn = document.getElementById('btn');
+    var ul = document.querySelector('.list');
 
-        var arr = [];
-        btn.onclick = function(){
-            var msg = text.value;
-
-            if(msg === ''){
-                return false;
-            }
-            
-            //本地存储
-            var obj = {
-                msg:msg,
-            }
-            arr.push(obj);
-            var json = JSON.stringify(arr);
-            localStorage.setItem('msg',json);
-
-            var localmsg = localStorage.getItem('msg');
-            if(localmsg = ''){
-                arr = [];
-            }else{
-                arr = JSON.parse(msg);
-            }
-            // console.log(localmsg)
-           //循环创建li添加到列表中
-           localmsg.forEach(function(e){
-                 var li = document.createElement('li');
-                  li.innerHTML = '<p>' +e.msg +'</p><span>删除</span>';
-                  first = document.querySelector('#list li:first-child');
-                  list.insertBefore(li,first);
-            });
-            
-           
-            
-            text.value = '';
+    //取出本地存储数据转为数组格式
+    var localmsg = JSON.parse(localStorage.getItem('msg'));
+    //如果没有则为空数组
+    if(localmsg === null){
+        localmsg = [];
+    }
+    // console.dir(localmsg)
+    //遍历本地数据
+    for(i=0;i<localmsg.length;i++){
+        //生成li
+        var li = document.createElement('li');
+        //给li赋值
+        li.innerHTML = '<p>'+localmsg[i].msg+'</p><span data-id="'+localmsg[i].id+'" class="del">删除</span>';
+        //塞给ul
+        ul.insertBefore(li,ul.children[0]);
+    }
+    //点击发布时
+    btn.onclick = function(){
+        //获取信息
+        var msg = text.value;
+        if(msg == ''){
+            return false;
         }
-
-        list.addEventListener('click',function(e){
-            // console.log(e.target);
-            console.dir(e.target);   //是什么反注释自己看
-            // console.dir(e.target.nodeName);
-            if(e.target.nodeName === 'SPAN'){
-                var li = e.target.parentNode;
-                list.removeChild(li);
+        //创建一个索引对应本条信息且自增作为标志
+        var id = 0;
+        for(i=0;i<localmsg.length;i++){
+            if(id <= i){
+                id++;
+            }
+        }
+        //将信息存储在本地
+        //创建对象存储信息
+        var obj = {
+            id:id,
+            msg:msg
+        }
+        //将信息存入localmsg
+        localmsg.push(obj); //与下一步转格式分开写，不然报错
+        //将信息转换为字符串
+        var josn = JSON.stringify(localmsg);
+        //存入本地存储
+        localStorage.setItem('msg',josn);
+        //生成暂时数据列表
+        var li = document.createElement('li');
+        li.innerHTML = '<p>'+localmsg[i].msg+'</p><span data-id="'+localmsg[i].id+'" class="del">删除</span>';
+        ul.insertBefore(li,ul.children[0]);
+        //清空留言区
+        text.value = '';
+    }
+    //ctrl+enter 发布
+    text.onkeydown = function(e){
+        // console.dir(e)
+        if(e.keyCode === 13 && e.ctrlKey === true){
+            btn.onclick();
+        }
+    }
+    //委托删除
+    ul.addEventListener('click',function(e){
+        //如果点击的时删除按钮
+        //删除临时数据
+        //console.dir(e.target)
+        if(e.target.classList.contains('del')){
+                ul.removeChild(e.target.parentNode);
+        }
+        //删除本地存储当条数据
+        var localmsg = JSON.parse(localStorage.getItem('msg'));
+        var id = e.target.dataset.id;
+        localmsg.forEach(function(e,i){
+            // console.dir(e)
+            if(e.id == id){
+                localmsg.splice(i,1);
             }
         })
-    </script>
+        var josn = JSON.stringify(localmsg);
+        localStorage.setItem('msg',josn)
+    })
+    
+</script>
 </html>
