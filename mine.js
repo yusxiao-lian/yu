@@ -1,4 +1,4 @@
-(function(){
+;(function(){
     //随机生成区间整数
     function randomInt(n,m){          
         return  Math.floor(Math.random()*(m-n+1) + n);            
