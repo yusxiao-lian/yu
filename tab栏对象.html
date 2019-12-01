@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    .box {
+      width: 400px;
+      height: 400px;
+      border: 1px solid #000;
+      margin: 0px auto;
+      border-bottom: 0 none;
+    }
+    .row {
+      display: flex;
+      border-bottom: 1px solid #000;
+    }
+    .item {
+      width: 100px;
+      height: 40px;
+      border-right: 1px solid #000;
+      /* line-height: 40px;
+      text-align: center; */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .content {
+      height: 357px;
+      flex: 0 0 100%;
+      display: none;
+    }
+    .active {
+      background-color: red;
+    }
+    .show {
+      display: block;
+    }
+    .a2 {
+        background: yellow;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="row">
+      <div class="item">影音</div>
+      <div class="item">书籍</div>
+      <div class="item">零食</div>
+    </div>
+    <div class="row">
+      <div class="content show">影音的内容</div>
+      <div class="content">书籍的内容</div>
+      <div class="content">零食的内容</div>
+    </div>
+  </div>
+</body>
+<script>
+    class Tab{
+        constructor(options){
+            this.itemsClass = options.itemsClass || '.item';
+            this.contentsClass = options.contentsClass || '.content';
+            this.eventType = options.eventType || 'mouseover';
+            this.contentsShowClass = options.contentsShowClass || 'show';
+            this.itemActineClass = options.itemActineClass || 'active';
+            //获取元素
+            this.items = document.querySelectorAll(this.itemsClass);
+            this.contents = document.querySelectorAll(this.contentsClass);
+            //  console.log(this.items);
+            this.addEvent();
+        }
+        
+         //注册事件
+         addEvent(){
+             this.items.forEach((e,i)=>{
+                 e.addEventListener(this.eventType,(eve,k)=>{
+                    //console.log(111);
+                     let current = eve.target;
+                     //切换标题
+                    this.changeItems(current);
+                     //改变内容
+                    this.changeContent(i);
+                 })
+             })
+         }
+         //封装切换标题方法
+         changeItems(current){
+             this.items.forEach((e,i)=>{
+                 e.classList.remove(this.itemActineClass);
+             })
+             current.classList.add(this.itemActineClass)
+         }
+        //封装改变内容的方法
+        changeContent(index){
+            this.contents.forEach((e,i)=>{
+                //console.log(111);
+                e.classList.remove(this.contentsShowClass);
+            })
+            this.contents[index].classList.add(this.contentsShowClass);
+        }
+    }
+    
+    let tab = new Tab({
+        itemActineClass: 'a2',
+    });
+</script>
+</html>
